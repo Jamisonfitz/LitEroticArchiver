@@ -12,7 +12,6 @@ from tkinter import messagebox
 from tkinter import filedialog
 import re
 from bs4 import BeautifulSoup
-import threading
 import sys
 
 # Global variable to store the selected directory
@@ -193,6 +192,7 @@ def process_story(url, processed_ids, urls_to_process, base_path):
                 save_to_file(author, category, title, text, html_content, page_num, base_path, header if page_num == 1 else "", pages_count)
             
 def process_stories():
+    base_path = Path(selected_directory)
     input_urls = text_input.get('1.0', tk.END).strip().split('\n')
     urls_to_process = [clean_url(url.strip()) for url in input_urls if url.strip()]
     processed_ids = set()
@@ -208,9 +208,6 @@ def paste_text():
         text_input.insert(tk.INSERT, text)
     except tk.TclError:
         messagebox.showerror("Paste Error", "Nothing to paste from clipboard")
-
-def start_process_stories():
-    threading.Thread(target=process_stories).start()
 
 def choose_directory():
     global selected_directory
@@ -239,7 +236,7 @@ directory_button = tk.Button(button_frame, text="Output Dir", command=choose_dir
 directory_button.pack(side=tk.LEFT, padx=5)
 
 # Process (Start) button
-process_button = tk.Button(button_frame, text="Start", command=start_process_stories)
+process_button = tk.Button(button_frame, text="Start", command=process_stories)
 process_button.pack(side=tk.LEFT, padx=5)
 
 logging_textbox = scrolledtext.ScrolledText(root, wrap=tk.WORD, height=10, state='disabled')
